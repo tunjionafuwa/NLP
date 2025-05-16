@@ -48,8 +48,8 @@ class ResBlockMLP(nn.Module):
 
         self.fc2 = nn.Linear(input_size // 2, output_size)
 
-        self.fc3_skip = nn.Linear(input_size, output_size)
         self.norm_skip = nn.LayerNorm(input_size)
+        self.fc3_skip = nn.Linear(input_size, output_size)
 
         self.elu = nn.ELU()
 
