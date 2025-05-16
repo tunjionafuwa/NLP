@@ -43,21 +43,21 @@ plt.show()
 class ResBlockMLP(nn.Module):
     def __init__(self, input_size, output_size):
         super(ResBlockMLP, self).__init__()
-        self.norm1 = nn.LayerNorm(input_size)
         self.fc1 = nn.Linear(input_size, input_size // 2)
+        self.norm1 = nn.LayerNorm(input_size // 2)
 
-        self.norm2 = nn.LayerNorm(input_size // 2)
         self.fc2 = nn.Linear(input_size // 2, output_size)
 
-        self.fc3 = nn.Linear(input_size, output_size)
+        self.fc3_skip = nn.Linear(input_size, output_size)
+        self.norm_skip = nn.LayerNorm(input_size)
 
         self.elu = nn.ELU()
 
     def forward(self, x):
-        x = self.elu(self.norm1(x))
-        skip = self.fc3(x)
+        x = self.elu(self.norm_skip(x))
+        skip = self.fc3_skip(x)
 
-        x = self.elu(self.norm2(self.fc1(x)))
+        x = self.elu(self.norm1(self.fc1(x)))
         x = self.fc2(x)
 
         output = x + skip
